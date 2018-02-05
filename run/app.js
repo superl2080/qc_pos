@@ -27,18 +27,17 @@ main.run(app);
 // error handler
 app.use((err, req, res, next) => {
   // catch 404 and forward to error handler
-  let error = err;
-  if (!error) {
-    error = new Error('Not Found');
-    error.status = 404;
+  if (!err) {
+    err = new Error('Not Found');
+    err.status = 404;
   }
 
-  error.status = error.status || 500;
-  console.error(error);
+  err.status = err.status || 500;
+  console.error(err);
   if (res.headersSent) {
-    return next(error);
+    return next(err);
   }
-  res.render('error', { error });
+  res.render('error', { error: err });
 });
 
 module.exports = app;
