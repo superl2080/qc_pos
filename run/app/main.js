@@ -1,11 +1,21 @@
 
 const path = require('path');
+const request = require('request');
 
 
 module.exports = {
 
   run: async function (app) {
     console.log(__filename + '\n[CALL] run');
+
+    app.use('/api/*', (req, res, next) => {
+      req.pipe(request({
+        url: process.env.SERVICE_URL + req.originalUrl,
+        method: req.method,
+        headers: req.headers,
+        body: JSON.stringify(req.body),
+      }), { end: false }).pipe(res);
+    });
 
     app.get('/*', (req, res) => {
       res.sendFile(path.join(__dirname, 'dist', 'index.html'));

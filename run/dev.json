@@ -5,7 +5,7 @@
             "script": "./bin/www",
             "instances": "1",
             "env": {
-                "SERVICE_URL": "http://pos.51qingcheng.com",
+                "SERVICE_URL": "http://service.51qingcheng.com",
                 "PORT": 3003,
                 "NODE_ENV": "development"
             }
