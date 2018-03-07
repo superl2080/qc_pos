@@ -4,32 +4,21 @@ import DocumentTitle from 'react-document-title';
 import { Icon } from 'antd';
 import GlobalFooter from '../components/GlobalFooter';
 import styles from './UserLayout.less';
-import logo from '../assets/logo.svg';
 import { getRoutes } from '../utils/utils';
+import Authorized from '../utils/Authorized';
 
-const links = [{
-  key: 'help',
-  title: '帮助',
-  href: '',
-}, {
-  key: 'privacy',
-  title: '隐私',
-  href: '',
-}, {
-  key: 'terms',
-  title: '条款',
-  href: '',
-}];
+const { AuthorizedRoute } = Authorized;
 
-const copyright = <div>Copyright <Icon type="copyright" /> 2018 蚂蚁金服体验技术部出品</div>;
+const copyright = <div>Copyright <Icon type="copyright" /> 2018 青橙版权所有 </div>;
+const logo = '/logo.png';
 
 class UserLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = 'Ant Design Pro';
+    let title = '青橙合伙人平台';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - Ant Design Pro`;
+      title = `${routerData[pathname].name} - 青橙合伙人平台`;
     }
     return title;
   }
@@ -43,26 +32,33 @@ class UserLayout extends React.PureComponent {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>Ant Design</span>
+                  <span className={styles.title}>青橙合伙人平台</span>
                 </Link>
               </div>
-              <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+              <div className={styles.desc}></div>
             </div>
             <Switch>
               {getRoutes(match.path, routerData).map(item =>
                 (
-                  <Route
+                  <AuthorizedRoute
                     key={item.key}
                     path={item.path}
                     component={item.component}
                     exact={item.exact}
+                    authority={item.authority}
+                    redirectPath="/"
                   />
                 )
               )}
-              <Redirect exact from="/user" to="/user/login" />
+              <Redirect exact from="/user/guest" to="/user/guest/login" />
             </Switch>
           </div>
-          <GlobalFooter links={links} copyright={copyright} />
+          <GlobalFooter links={[{
+            key: '如何成为合伙人',
+            title: '如何成为合伙人',
+            href: 'http://www.51qingcheng.com/profit.html',
+            blankTarget: true,
+          }]} copyright={copyright} />
         </div>
       </DocumentTitle>
     );

@@ -7,9 +7,9 @@ describe('Login', () => {
     page
       .goto('http://localhost:8000/')
       .evaluate(() => {
-        window.localStorage.setItem('antd-pro-authority', 'guest');
+        window.localStorage.setItem('qc-character', 'GUEST');
       })
-      .goto('http://localhost:8000/#/user/login');
+      .goto('http://localhost:8000/user/guest/login');
   });
 
   it('should login with failure', async () => {
@@ -21,12 +21,12 @@ describe('Login', () => {
   });
 
   it('should login successfully', async () => {
-    const text = await page.type('#userName', 'admin')
-      .type('#password', '888888')
+    const text = await page.type('#userName', 'ADMIN')
+      .type('#password', '1')
       .click('button[type="submit"]')
       .wait('.ant-layout-sider h1') // should display error
       .evaluate(() => document.body.innerHTML)
       .end();
-    expect(text).toContain('<h1>Ant Design Pro</h1>');
+    expect(text).toContain('<h1>青橙合伙人平台</h1>');
   });
 });

@@ -71,15 +71,53 @@ function getFlatMenuData(menus) {
 export const getRouterData = (app) => {
   const routerConfig = {
     '/': {
-      component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
+      component: dynamicWrapper(app, [], () => import('../layouts/BasicLayout')),
     },
-    '/dashboard/analysis': {
+    '/dashboard': {
+      component: dynamicWrapper(app, [], () => import('../routes/Dashboard/Analysis')),
+    },
+
+    '/point/list': {
+      component: dynamicWrapper(app, ['point'], () => import('../routes/Point/List')),
+    },
+    '/point/detail/:id': {
+      component: dynamicWrapper(app, ['point'], () => import('../routes/Point/Detail')),
+    },
+
+    '/user/my': {
+      component: dynamicWrapper(app, ['user'], () => import('../routes/User/My')),
+    },
+    '/user/guest': {
+      component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
+    },
+    '/user/guest/login': {
+      component: dynamicWrapper(app, ['user'], () => import('../routes/User/Login')),
+    },
+
+    '/exception/403': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
+    },
+    '/exception/404': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
+    },
+    '/exception/500': {
+      component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
+    },
+
+    '/result/success': {
+      component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
+    },
+    '/result/fail': {
+      component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
+    },
+
+    '/dashboard2/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     },
-    '/dashboard/monitor': {
+    '/dashboard2/monitor': {
       component: dynamicWrapper(app, ['monitor'], () => import('../routes/Dashboard/Monitor')),
     },
-    '/dashboard/workplace': {
+    '/dashboard2/workplace': {
       component: dynamicWrapper(app, ['project', 'activities', 'chart'], () => import('../routes/Dashboard/Workplace')),
       // hideInBreadcrumb: true,
       // name: '工作台',
@@ -130,39 +168,6 @@ export const getRouterData = (app) => {
     '/profile/advanced': {
       component: dynamicWrapper(app, ['profile'], () => import('../routes/Profile/AdvancedProfile')),
     },
-    '/result/success': {
-      component: dynamicWrapper(app, [], () => import('../routes/Result/Success')),
-    },
-    '/result/fail': {
-      component: dynamicWrapper(app, [], () => import('../routes/Result/Error')),
-    },
-    '/exception/403': {
-      component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
-    },
-    '/exception/404': {
-      component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
-    },
-    '/exception/500': {
-      component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
-    },
-    '/exception/trigger': {
-      component: dynamicWrapper(app, ['error'], () => import('../routes/Exception/triggerException')),
-    },
-    '/user': {
-      component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
-    },
-    '/user/login': {
-      component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
-    },
-    '/user/register': {
-      component: dynamicWrapper(app, ['register'], () => import('../routes/User/Register')),
-    },
-    '/user/register-result': {
-      component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
-    },
-    // '/user/:id': {
-    //   component: dynamicWrapper(app, [], () => import('../routes/User/SomeComponent')),
-    // },
   };
   // Get name from ./menu.js or just set it in the router data.
   const menuData = getFlatMenuData(getMenuData());

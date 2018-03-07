@@ -69,7 +69,7 @@ export default function request(url, options) {
       const status = e.name;
       if (status === 401) {
         dispatch({
-          type: 'login/logout',
+          type: 'user/logout',
         });
         return;
       }

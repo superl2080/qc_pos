@@ -127,7 +127,7 @@ export default class SiderMenu extends PureComponent {
    * get SubMenu or Item
    */
   getSubMenuOrItem=(item) => {
-    if (item.children && item.children.some(child => child.name)) {
+    if (item.children && item.children.some(child => !child.hideInMenu && child.name)) {
       return (
         <SubMenu
           title={
@@ -221,7 +221,7 @@ export default class SiderMenu extends PureComponent {
         <div className={styles.logo} key="logo">
           <Link to="/">
             <img src={logo} alt="logo" />
-            <h1>Ant Design Pro</h1>
+            <h1>青橙合伙人平台</h1>
           </Link>
         </div>
         <Menu

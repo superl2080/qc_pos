@@ -1,14 +1,14 @@
 {
-    "apps": [
-        {
-            "name": "postest",
-            "script": "./bin/www",
-            "instances": "1",
-            "env": {
-                "SERVICE_URL": "http://servicetest.51qingcheng.com",
-                "PORT": 3103,
-                "NODE_ENV": "test"
-            }
-        }
-    ]
+  "apps": [
+    {
+      "name": "postest",
+      "script": "./bin/www",
+      "instances": "1",
+      "env": {
+        "SERVICE_URL": "http://servicetest.51qingcheng.com",
+        "PORT": 3103,
+        "NODE_ENV": "test"
+      }
+    }
+  ]
 }

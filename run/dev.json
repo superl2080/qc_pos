@@ -1,14 +1,15 @@
 {
-    "apps": [
-        {
-            "name": "pos",
-            "script": "./bin/www",
-            "instances": "1",
-            "env": {
-                "SERVICE_URL": "http://service.51qingcheng.com",
-                "PORT": 3003,
-                "NODE_ENV": "development"
-            }
-        }
-    ]
+  "apps": [
+  {
+      "name": "pos",
+      "script": "./bin/www",
+      "instances": "1",
+      "exec_mode": "cluster",
+      "env": {
+        "SERVICE_URL": "http://service.51qingcheng.com",
+        "PORT": 3003,
+        "NODE_ENV": "development"
+      }
+    }
+  ]
 }
