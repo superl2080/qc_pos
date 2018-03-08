@@ -1,7 +1,8 @@
 // use localStorage to store the authority info, which might be sent from server in actual project.
 export function getAuthority() {
   const token = localStorage.getItem('qc-token');
-  const character = localStorage.getItem('qc-character');
+  let character = localStorage.getItem('qc-character');
+  if( !character ) character = 'GUEST';
   return { token, character };
 }
 

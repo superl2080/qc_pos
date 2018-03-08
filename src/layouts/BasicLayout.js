@@ -61,19 +61,11 @@ const query = {
   },
 };
 
-let isMobile;
-enquireScreen((b) => {
-  isMobile = b;
-});
-
 class BasicLayout extends React.PureComponent {
   static childContextTypes = {
     location: PropTypes.object,
     breadcrumbNameMap: PropTypes.object,
   }
-  state = {
-    isMobile,
-  };
   getChildContext() {
     const { location, routerData } = this.props;
     return {
@@ -82,9 +74,10 @@ class BasicLayout extends React.PureComponent {
     };
   }
   componentDidMount() {
-    enquireScreen((mobile) => {
-      this.setState({
-        isMobile: mobile,
+    enquireScreen((isMobile) => {
+      this.props.dispatch({
+        type: 'global/changeLayoutisMobile',
+        payload: isMobile,
       });
     });
   }
@@ -114,7 +107,7 @@ class BasicLayout extends React.PureComponent {
       urlParams.searchParams.delete('redirect');
       window.history.replaceState(null, 'redirect', urlParams.href);
     } else {
-      return '/dashboard';
+      return '/home';
     }
     return redirect;
   }
@@ -126,7 +119,7 @@ class BasicLayout extends React.PureComponent {
   }
   render() {
     const {
-      collapsed, routerData, match, location,
+      isMobile, collapsed, routerData, match, location,
     } = this.props;
     const bashRedirect = this.getBashRedirect();
     const layout = (
@@ -140,14 +133,14 @@ class BasicLayout extends React.PureComponent {
           menuData={getMenuData()}
           collapsed={collapsed}
           location={location}
-          isMobile={this.state.isMobile}
+          isMobile={isMobile}
           onCollapse={this.handleMenuCollapse}
         />
         <Layout>
           <GlobalHeader
             logo={logo}
             collapsed={collapsed}
-            isMobile={this.state.isMobile}
+            isMobile={isMobile}
             onCollapse={this.handleMenuCollapse}
           />
           <Content style={{ margin: '24px 24px 0', height: '100%' }}>
@@ -191,5 +184,6 @@ class BasicLayout extends React.PureComponent {
 }
 
 export default connect(({ global, loading }) => ({
+  isMobile: global.isMobile,
   collapsed: global.collapsed,
 }))(BasicLayout);

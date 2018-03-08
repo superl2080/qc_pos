@@ -27,7 +27,7 @@ const action = (
     <ButtonGroup>
       <Button>操作</Button>
       <Button>操作</Button>
-      <Dropdown overlay={menu} placement="bottomRight">
+      <Dropdown overlay={menu} placement="topRight">
         <Button><Icon type="ellipsis" /></Button>
       </Dropdown>
     </ButtonGroup>

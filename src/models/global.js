@@ -3,10 +3,18 @@ export default {
   namespace: 'global',
 
   state: {
+    isMobile: false,
     collapsed: false,
   },
 
   reducers: {
+    changeLayoutisMobile(state, { payload }) {
+      return {
+        ...state,
+        isMobile: payload,
+      };
+    },
+    
     changeLayoutCollapsed(state, { payload }) {
       return {
         ...state,

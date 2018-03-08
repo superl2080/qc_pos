@@ -3,7 +3,7 @@ import { isUrl } from '../utils/utils';
 const menuData = [{
   name: '工作台',
   icon: 'dashboard',
-  path: 'dashboard',
+  path: 'home',
 
 }, {
   name: '点位',
@@ -70,7 +70,7 @@ const menuData = [{
 }, {
   name: 'dashboard',
   icon: 'dashboard',
-  path: 'dashboard2',
+  path: 'dashboard',
   authority: 'ADMIN',
   children: [{
     name: '分析页',
