@@ -18,7 +18,7 @@ module.exports = {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json; charset=utf-8',
-        }
+        },
         json: JSON.stringify(req.body),
       }).pipe(res);
     });
