@@ -16,7 +16,6 @@ for (let i = 0; i < 46; i += 1) {
     partner: {
       name: `地区合伙人某某某${i}`,
     },
-    qrcode_url: `http://sittest.51qingcheng.com/scan/point/${i}`,
   });
 }
 
