@@ -12,15 +12,7 @@ module.exports = {
     });
 
     app.use('/pos/*', (req, res, next) => {
-      request({
-        url: process.env.SERVICE_URL + req.originalUrl,
-        method: req.method,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-        json: JSON.stringify(req.body),
-      }).pipe(res);
+      req.pipe(request(process.env.SERVICE_URL + req.originalUrl)).pipe(res);
     });
 
     app.get('/*', (req, res) => {

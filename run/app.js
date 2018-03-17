@@ -15,10 +15,10 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in app/dist
 app.use(favicon(path.join(__dirname, 'app/dist', 'favicon.png')));
 app.use(logger('dev'));
-app.use(bodyParser.raw({ type: 'text/xml' }));
-app.use(bodyParser.json({ type: 'application/json' }));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+// app.use(bodyParser.raw({ type: 'text/xml' }));
+// app.use(bodyParser.json({ type: 'application/json' }));
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'app/dist')));
 
 main.run(app);
