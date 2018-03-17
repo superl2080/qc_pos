@@ -1,10 +1,33 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal, message, Badge, Divider } from 'antd';
+import QRCode from 'qrcode.react';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './List.less';
+
+const base64Img2Blob = (code) => {
+  var parts = code.split(';base64,');
+  var contentType = parts[0].split(':')[1];
+  var raw = window.atob(parts[1]);
+  var rawLength = raw.length;
+  var uInt8Array = new Uint8Array(rawLength);
+  for (var i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+  return new Blob([uInt8Array], {type: contentType}); 
+}
+
+const downloadFile = (fileName, content) => {
+  var aLink = document.createElement('a');
+  var blob = base64Img2Blob(content); //new Blob([content]);
+  var evt = document.createEvent("HTMLEvents");
+  evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错
+  aLink.download = fileName;
+  aLink.href = URL.createObjectURL(blob);
+  aLink.dispatchEvent(evt);
+} 
 
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 const stateMap = {
@@ -43,7 +66,7 @@ const columns = [
 ];
 
 const CreateAddModel = Form.create()((props) => {
-  const { addModalVisible, form, handleAddModalOK, handleAddModalVisible } = props;
+  const { modalVisible, form, handleAddModalOK, handleModalVisible } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -51,12 +74,12 @@ const CreateAddModel = Form.create()((props) => {
     });
   };
   const onCancel = () => {
-    handleAddModalVisible(false);
+    handleModalVisible(false);
   };
   return (
     <Modal
       title="批量创建点位"
-      visible={addModalVisible}
+      visible={modalVisible}
       onOk={okHandle}
       onCancel={onCancel}
     >
@@ -82,13 +105,14 @@ const CreateAddModel = Form.create()((props) => {
 @Form.create()
 export default class TableList extends PureComponent {
   state = {
-    addModalVisible: false,
+    modalVisible: false,
     selectedRows: [],
     formValues: {},
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'point/fetch',
     });
@@ -128,13 +152,13 @@ export default class TableList extends PureComponent {
   handleAddModalOK = (fields) => {
     message.error('功能还没做完呢！');
     this.setState({
-      addModalVisible: false,
+      modalVisible: false,
     });
   }
 
-  handleAddModalVisible = (flag) => {
+  handleModalVisible = (flag) => {
     this.setState({
-      addModalVisible: !!flag,
+      modalVisible: !!flag,
     });
   }
 
@@ -146,12 +170,8 @@ export default class TableList extends PureComponent {
 
     switch (e.key) {
       case 'download':
-        dispatch({
-          type: 'point/download',
-          payload: {
-            piontIds: selectedRows,
-          },
-        });
+        const qrs = document.querySelectorAll('.pointQrcode');
+        qrs.forEach(qr => downloadFile(qr.getAttribute('filename'), qr.toDataURL('image/png')));
         break;
       default:
         break;
@@ -192,7 +212,7 @@ export default class TableList extends PureComponent {
 
   render() {
     const { point: { data }, loading, form: { getFieldDecorator } } = this.props;
-    const { selectedRows, addModalVisible } = this.state;
+    const { selectedRows, modalVisible } = this.state;
 
     return (
       <PageHeaderLayout>
@@ -229,15 +249,15 @@ export default class TableList extends PureComponent {
               </Form>
             </div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleAddModalVisible(true)}>
+              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
               </Button>
               {
                 selectedRows.length > 0 && (
                   <span>
                     <Dropdown overlay={
-                      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-                        <Menu.Item key="download">打印二维码</Menu.Item>
+                      <Menu onClick={this.handleBatchMenuClick} selectedKeys={[]}>
+                        <Menu.Item key="download">下载二维码</Menu.Item>
                       </Menu>
                     }>
                       <Button>
@@ -247,6 +267,11 @@ export default class TableList extends PureComponent {
                   </span>
                 )
               }
+              <div style={{ display: 'none' }}>
+              {
+                selectedRows.map(selectedRow => <QRCode className="pointQrcode" level="H" filename={selectedRow.name + ".png"} value={selectedRow.qrcode_url} /> )
+              }
+              </div>
             </div>
             <StandardTable
               selectedRows={selectedRows}
@@ -260,8 +285,8 @@ export default class TableList extends PureComponent {
         </Card>
         <CreateAddModel
           handleAddModalOK={this.handleAddModalOK}
-          handleAddModalVisible={this.handleAddModalVisible}
-          addModalVisible={addModalVisible}
+          handleModalVisible={this.handleModalVisible}
+          modalVisible={modalVisible}
         />
       </PageHeaderLayout>
     );

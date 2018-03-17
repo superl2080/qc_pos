@@ -60,12 +60,6 @@ const proxy = {
   },
   'GET /api/point': getPoint,
   'POST /api/point': {
-    $params: {
-      pageSize: {
-        desc: '分页',
-        exp: 2,
-      },
-    },
     $body: postPoint,
   },
   // 支持值为 Object 和 Array
