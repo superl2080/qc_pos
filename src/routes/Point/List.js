@@ -256,7 +256,7 @@ export default class TableList extends PureComponent {
               {
                 selectedRows.length > 0 && (
                   <span>
-                    <Dropdown overlay={
+                    <Dropdown trigger={['click', 'hover']} overlay={
                       <Menu onClick={this.handleBatchMenuClick} selectedKeys={[]}>
                         <Menu.Item key="download">下载二维码</Menu.Item>
                       </Menu>
