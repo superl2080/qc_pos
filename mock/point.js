@@ -123,6 +123,6 @@ export function postPoint(req, res, u, b) {
 }
 
 export default {
-  getPoint,
+  getPointList,
   postPoint,
 };

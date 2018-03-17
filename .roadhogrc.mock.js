@@ -18,57 +18,9 @@ const proxy = {
       SIT_URL: "http://sittest.51qingcheng.com",
     });
   },
-  'POST /pos/partner/login': (req, res) => {
-    const { password, logid, type } = req.body;
-    if(password === '1' && logid === 'ADMIN'){
-      res.send({
-        code: 0,
-        data: {
-          token: 'a',
-          character: 'ADMIN',
-        },
-      });
-      return ;
-    }
-    if(password === '1' && logid === 'OPERATOR'){
-      res.send({
-        code: 0,
-        data: {
-          token: 'b',
-          character: 'OPERATOR',
-        },
-      });
-      return ;
-    }
-    if(password === '1' && logid === 'DEVICER'){
-      res.send({
-        code: 0,
-        data: {
-          token: 'c',
-          character: 'DEVICER',
-        },
-      });
-      return ;
-    }
-    if(password === '1' && logid === 'AGENT'){
-      res.send({
-        code: 0,
-        data: {
-          token: 'd',
-          character: 'AGENT',
-        },
-      });
-      return ;
-    }
-    res.send({
-      code: 220000,
-      data: {
-        token: undefined,
-        character: 'GUEST',
-      },
-    });
-  },
-  'GET /pos/point/getList': getPointList,
+  'POST /pos/partner/login': 'http://servicetest.51qingcheng.com',
+  'GET /pos/point/getList': 'http://servicetest.51qingcheng.com',
+
   'POST /api/point': {
     $body: postPoint,
   },
@@ -111,4 +63,4 @@ const proxy = {
   'GET /api/profile/advanced': getProfileAdvancedData,
 };
 
-export default noProxy ? {} : delay(proxy, 1000);
+export default noProxy ? { } : delay(proxy, 1000);
