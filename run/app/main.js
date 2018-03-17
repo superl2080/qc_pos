@@ -2,7 +2,6 @@
 const path = require('path');
 const request = require('request');
 
-
 module.exports = {
 
   run: async function (app) {
@@ -13,12 +12,11 @@ module.exports = {
     });
 
     app.use('/pos/*', (req, res, next) => {
-      req.pipe(request({
+      request({
         url: process.env.SERVICE_URL + req.originalUrl,
         method: req.method,
-        headers: req.headers,
         body: JSON.stringify(req.body),
-      }), { end: false }).pipe(res);
+      }).pipe(res);
     });
 
     app.get('/*', (req, res) => {
