@@ -2,6 +2,22 @@
 @import "../../utils/utils.less";
 
 .tableList {
+  :global {
+    .ant-table-selection-column {
+      width: 40px !important;
+      min-width: 40px !important;
+    }
+    .ant-table-thead {
+      th {
+        padding: 8px;
+      }
+    }
+    .ant-table-tbody {
+      td {
+        padding: 8px;
+      }
+    }
+  }
   .tableListOperator {
     margin-bottom: 16px;
     button {
@@ -13,13 +29,14 @@
 .tableListForm {
   :global {
     .ant-form-item {
-      margin-bottom: 24px;
       margin-right: 0;
+      margin-bottom: 16px;
       display: flex;
       > .ant-form-item-label {
         width: auto;
         line-height: 32px;
         padding-right: 8px;
+        padding-bottom: 0;
       }
       .ant-form-item-control {
         line-height: 32px;
@@ -32,6 +49,9 @@
   .submitButtons {
     white-space: nowrap;
     margin-bottom: 24px;
+    button {
+      margin-right: 8px;
+    }
   }
 }
 

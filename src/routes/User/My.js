@@ -44,23 +44,11 @@ const tableData = [{
 
 class AdvancedForm extends PureComponent {
   logout = () => {
+    message.success('已退出当前登录账号！');
     this.props.dispatch({
       type: 'user/logout',
     });
   }
-
-  dropdownMenu = ({key}) => {
-    switch(key) {
-      case 'changePassword': 
-        message.warning('暂时不可以修改账号密码哦！');
-        break;
-      case 'changeProfile': 
-        message.warning('暂时不可以修改个人资料哦！');
-        break;
-      default:
-        break;
-    }
-  };
 
   render() {
     const { form, dispatch, logouting, isMobile, collapsed } = this.props;
@@ -270,23 +258,12 @@ class AdvancedForm extends PureComponent {
       */}
         <FooterToolbar style={isMobile ? { width: '100%' } : (collapsed ? { width: `calc(100% - 80px)` } : { width: `calc(100% - 256px)`}) }>
           {getErrorInfo()}
-          <ButtonGroup>
-            <Popconfirm title="确认退出当前登录账户？" onConfirm={this.logout}>
-              <Button type="primary" loading={logouting}>
-                <Icon type="logout" />
-                退出登录
-              </Button>
-            </Popconfirm>
-            <Dropdown trigger={['click']} overlay={
-              <Menu onClick={this.dropdownMenu} >
-                <Menu.Item key="changePassword"><Icon type="key" /><span className={styles.span}>修改账号密码</span></Menu.Item>
-                <Menu.Divider />
-                <Menu.Item key="changeProfile"><Icon type="edit" /><span className={styles.span}>修改个人资料</span></Menu.Item>
-              </Menu>
-            } placement="bottomRight">
-              <Button><Icon type="ellipsis" /></Button>
-            </Dropdown>
-          </ButtonGroup>
+          <Popconfirm title="确认退出当前登录账号？" onConfirm={this.logout}>
+            <Button type="danger" loading={logouting}>
+              <Icon type="logout" />
+              退出登录
+            </Button>
+          </Popconfirm>
         </FooterToolbar>
       </PageHeaderLayout>
     );

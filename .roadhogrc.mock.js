@@ -1,5 +1,6 @@
 import mockjs from 'mockjs';
 import { getRule, postRule } from './mock/rule';
+import { getPoint, postPoint } from './mock/point';
 import { getActivities, getNotice, getFakeList } from './mock/api';
 import { getFakeChartData } from './mock/chart';
 import { imgMap } from './mock/utils';
@@ -56,6 +57,16 @@ const proxy = {
       token: undefined,
       character: 'GUEST',
     });
+  },
+  'GET /api/point': getPoint,
+  'POST /api/point': {
+    $params: {
+      pageSize: {
+        desc: '分页',
+        exp: 2,
+      },
+    },
+    $body: postPoint,
   },
   // 支持值为 Object 和 Array
   'GET /api/partner': {

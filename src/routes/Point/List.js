@@ -1,117 +1,88 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal, message, Badge, Divider } from 'antd';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './List.less';
 
-const FormItem = Form.Item;
-const { Option } = Select;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
+const stateMap = {
+  OPEN: {
+    text: '待机',
+    badge: 'warning',
+  },
+  DEPLOY: {
+    text: '运行中',
+    badge: 'success',
+  },
+  CLOSE: {
+    text: '关闭',
+    badge: 'default',
+  },
+};
 const columns = [
   {
-    title: '规则编号',
-    dataIndex: 'no',
-  },
-  {
-    title: '描述',
-    dataIndex: 'description',
-  },
-  {
-    title: '服务调用次数',
-    dataIndex: 'callNo',
-    sorter: true,
-    align: 'right',
-    render: val => `${val} 万`,
-    // mark to display a total number
-    needTotal: true,
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    filters: [
-      {
-        text: status[0],
-        value: 0,
-      },
-      {
-        text: status[1],
-        value: 1,
-      },
-      {
-        text: status[2],
-        value: 2,
-      },
-      {
-        text: status[3],
-        value: 3,
-      },
-    ],
-    render(val) {
-      return <Badge status={statusMap[val]} text={status[val]} />;
+    title: '点位名',
+    dataIndex: 'name',
+    sorter: (a, b) => a.name.localeCompare(b.name),
+    render(val, data) {
+      return <Badge status={stateMap[data.state].badge} text={val} />;
     },
   },
   {
-    title: '更新时间',
-    dataIndex: 'updatedAt',
-    sorter: true,
-    render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    title: '商户名',
+    dataIndex: 'info.shop',
+    sorter: (a, b) => a.info.shop.localeCompare(b.info.shop),
   },
   {
-    title: '操作',
-    render: () => (
-      <Fragment>
-        <a href="">配置</a>
-        <Divider type="vertical" />
-        <a href="">订阅警报</a>
-      </Fragment>
-    ),
+    title: '所属合伙人',
+    dataIndex: 'partner.name',
+    sorter: (a, b) => a.partner.name.localeCompare(b.partner.name),
   },
 ];
 
-const CreateForm = Form.create()((props) => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+const CreateAddModel = Form.create()((props) => {
+  const { addModalVisible, form, handleAddModalOK, handleAddModalVisible } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      handleAdd(fieldsValue);
+      handleAddModalOK(fieldsValue);
     });
+  };
+  const onCancel = () => {
+    handleAddModalVisible(false);
   };
   return (
     <Modal
-      title="新建规则"
-      visible={modalVisible}
+      title="批量创建点位"
+      visible={addModalVisible}
       onOk={okHandle}
-      onCancel={() => handleModalVisible()}
+      onCancel={onCancel}
     >
-      <FormItem
+      <Form.Item
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 15 }}
-        label="描述"
+        label="数量"
       >
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
+        {form.getFieldDecorator('count', {
+          rules: [{ required: true, message: '请输入需要创建的点位数量' }],
         })(
-          <Input placeholder="请输入" />
+          <Input placeholder="请输入创建的数量" />
         )}
-      </FormItem>
+      </Form.Item>
     </Modal>
   );
 });
 
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ point, loading }) => ({
+  point,
+  loading: loading.models.point,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
   state = {
-    modalVisible: false,
-    expandForm: false,
+    addModalVisible: false,
     selectedRows: [],
     formValues: {},
   };
@@ -119,8 +90,72 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'point/fetch',
     });
+  }
+
+  handleFormSearch = (e) => {
+    e.preventDefault();
+
+    const { dispatch, form } = this.props;
+
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+
+      this.setState({
+        formValues: fieldsValue,
+      });
+
+      dispatch({
+        type: 'point/fetch',
+        payload: fieldsValue,
+      });
+    });
+  }
+
+  handleFormReset = () => {
+    const { form, dispatch } = this.props;
+    form.resetFields();
+    this.setState({
+      formValues: {},
+    });
+    dispatch({
+      type: 'point/fetch',
+      payload: {},
+    });
+  }
+
+  handleAddModalOK = (fields) => {
+    message.error('功能还没做完呢！');
+    this.setState({
+      addModalVisible: false,
+    });
+  }
+
+  handleAddModalVisible = (flag) => {
+    this.setState({
+      addModalVisible: !!flag,
+    });
+  }
+
+  handleBatchMenuClick = (e) => {
+    const { dispatch } = this.props;
+    const { selectedRows } = this.state;
+
+    if (!selectedRows) return;
+
+    switch (e.key) {
+      case 'download':
+        dispatch({
+          type: 'point/download',
+          payload: {
+            piontIds: selectedRows,
+          },
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -144,52 +179,9 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'point/fetch',
       payload: params,
     });
-  }
-
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'rule/fetch',
-      payload: {},
-    });
-  }
-
-  toggleForm = () => {
-    this.setState({
-      expandForm: !this.state.expandForm,
-    });
-  }
-
-  handleMenuClick = (e) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'rule/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
   }
 
   handleSelectRows = (rows) => {
@@ -198,196 +190,58 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleSearch = (e) => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'rule/fetch',
-        payload: values,
-      });
-    });
-  }
-
-  handleModalVisible = (flag) => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  }
-
-  handleAdd = (fields) => {
-    this.props.dispatch({
-      type: 'rule/add',
-      payload: {
-        description: fields.desc,
-      },
-    });
-
-    message.success('添加成功');
-    this.setState({
-      modalVisible: false,
-    });
-  }
-
-  renderSimpleForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(
-                <Input placeholder="请输入" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">查询</Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
-  }
-
-  renderAdvancedForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(
-                <Input placeholder="请输入" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="调用次数">
-              {getFieldDecorator('number')(
-                <InputNumber style={{ width: '100%' }} />
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="更新日期">
-              {getFieldDecorator('date')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-        <div style={{ overflow: 'hidden' }}>
-          <span style={{ float: 'right', marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">查询</Button>
-            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
-            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
-            </a>
-          </span>
-        </div>
-      </Form>
-    );
-  }
-
-  renderForm() {
-    return this.state.expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
-  }
-
   render() {
-    const { rule: { data }, loading } = this.props;
-    const { selectedRows, modalVisible } = this.state;
-
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
-
-    const parentMethods = {
-      handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
-    };
+    const { point: { data }, loading, form: { getFieldDecorator } } = this.props;
+    const { selectedRows, addModalVisible } = this.state;
 
     return (
-      <PageHeaderLayout title="查询表格">
+      <PageHeaderLayout>
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>
-              {this.renderForm()}
+              <Form onSubmit={this.handleFormSearch} layout="inline">
+                <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+                  <Col md={8} sm={24}>
+                    <Form.Item label="关键词">
+                      {getFieldDecorator('text')(
+                        <Input placeholder="请输入模糊搜索关键词" />
+                      )}
+                    </Form.Item>
+                  </Col>
+                  <Col md={8} sm={24}>
+                    <Form.Item label="状&nbsp;&nbsp;&nbsp;&nbsp;态">
+                      {getFieldDecorator('state')(
+                        <Select placeholder="请选择状态" allowClear style={{ width: '100%' }}>
+                          <Select.Option value="OPEN">{stateMap['OPEN'].text}</Select.Option>
+                          <Select.Option value="DEPLOY">{stateMap['DEPLOY'].text}</Select.Option>
+                          <Select.Option value="CLOSE">{stateMap['CLOSE'].text}</Select.Option>
+                        </Select>
+                      )}
+                    </Form.Item>
+                  </Col>
+                  <Col md={8} sm={24}>
+                    <div className={styles.submitButtons}>
+                      <Button type="primary" htmlType="submit">搜索</Button>
+                      <Button onClick={this.handleFormReset}>重置</Button>
+                    </div>
+                  </Col>
+                </Row>
+              </Form>
             </div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button icon="plus" type="primary" onClick={() => this.handleAddModalVisible(true)}>
                 新建
               </Button>
               {
                 selectedRows.length > 0 && (
                   <span>
-                    <Button>批量操作</Button>
-                    <Dropdown overlay={menu}>
+                    <Dropdown overlay={
+                      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
+                        <Menu.Item key="download">打印二维码</Menu.Item>
+                      </Menu>
+                    }>
                       <Button>
-                        更多操作 <Icon type="down" />
+                        批量操作 <Icon type="down" />
                       </Button>
                     </Dropdown>
                   </span>
@@ -404,9 +258,10 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm
-          {...parentMethods}
-          modalVisible={modalVisible}
+        <CreateAddModel
+          handleAddModalOK={this.handleAddModalOK}
+          handleAddModalVisible={this.handleAddModalVisible}
+          addModalVisible={addModalVisible}
         />
       </PageHeaderLayout>
     );

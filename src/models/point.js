@@ -1,40 +1,46 @@
-import { queryFakeList } from '../services/api';
+import { queryPoint, removePoint, addPoint } from '../services/point';
 
 export default {
   namespace: 'point',
 
   state: {
-    list: [],
+    data: {
+      list: [],
+      pagination: {},
+    },
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+      const response = yield call(queryPoint, payload);
       yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
+        type: 'save',
+        payload: response,
       });
     },
-    *appendFetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+    *add({ payload, callback }, { call, put }) {
+      const response = yield call(addPoint, payload);
       yield put({
-        type: 'appendList',
-        payload: Array.isArray(response) ? response : [],
+        type: 'save',
+        payload: response,
       });
+      if (callback) callback();
+    },
+    *remove({ payload, callback }, { call, put }) {
+      const response = yield call(removePoint, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback();
     },
   },
 
   reducers: {
-    queryList(state, action) {
+    save(state, action) {
       return {
         ...state,
-        list: action.payload,
-      };
-    },
-    appendList(state, action) {
-      return {
-        ...state,
-        list: state.list.concat(action.payload),
+        data: action.payload,
       };
     },
   },
