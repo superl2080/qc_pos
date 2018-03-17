@@ -1,4 +1,5 @@
 import { getPointList, removePoint, addPoint } from '../services/point';
+import { getAuthority } from '../utils/authority';
 
 export default {
   namespace: 'point',
@@ -12,7 +13,7 @@ export default {
 
   effects: {
     *getList({ payload }, { call, put }) {
-      const response = yield call(getPointList, payload);
+      const response = yield call(getPointList, { ...payload, token: getAuthority().token });
       if( response.code === 0
         && response.data
         && response.data.list ) {
