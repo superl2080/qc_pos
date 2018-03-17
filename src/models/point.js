@@ -1,4 +1,4 @@
-import { queryPoint, removePoint, addPoint } from '../services/point';
+import { getPointList, removePoint, addPoint } from '../services/point';
 
 export default {
   namespace: 'point',
@@ -11,8 +11,8 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryPoint, payload);
+    *getList({ payload }, { call, put }) {
+      const response = yield call(getPointList, payload);
       response.list.forEach(d => d.key = d._id )
       yield put({
         type: 'save',

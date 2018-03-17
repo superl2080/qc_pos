@@ -20,7 +20,7 @@ for (let i = 0; i < 46; i += 1) {
   });
 }
 
-export function getPoint(req, res, u) {
+export function getPointList(req, res, u) {
   let url = u;
   if (!url || Object.prototype.toString.call(url) !== '[object String]') {
     url = req.url; // eslint-disable-line

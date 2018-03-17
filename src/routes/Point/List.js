@@ -115,7 +115,7 @@ export default class TableList extends PureComponent {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'point/fetch',
+      type: 'point/getList',
     });
   }
 
@@ -132,7 +132,7 @@ export default class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'point/fetch',
+        type: 'point/getList',
         payload: fieldsValue,
       });
     });
@@ -145,7 +145,7 @@ export default class TableList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'point/fetch',
+      type: 'point/getList',
       payload: {},
     });
   }
@@ -200,7 +200,7 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'point/fetch',
+      type: 'point/getList',
       payload: params,
     });
   }

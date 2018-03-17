@@ -2,9 +2,8 @@ import { stringify } from 'qs';
 import request from '../utils/request';
 
 
-
-export async function queryPoint(params) {
-  return request(`/pos/point?${stringify(params)}`);
+export async function getPointList(params) {
+  return request(`/pos/point/getList?${stringify(params)}`);
 }
 
 export async function removePoint(params) {

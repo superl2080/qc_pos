@@ -1,6 +1,6 @@
 import mockjs from 'mockjs';
 import { getRule, postRule } from './mock/rule';
-import { getPoint, postPoint } from './mock/point';
+import { getPointList, postPoint } from './mock/point';
 import { getActivities, getNotice, getFakeList } from './mock/api';
 import { getFakeChartData } from './mock/chart';
 import { imgMap } from './mock/utils';
@@ -68,7 +68,7 @@ const proxy = {
       },
     });
   },
-  'GET /pos/point': getPoint,
+  'GET /pos/point/getList': getPointList,
   'POST /api/point': {
     $body: postPoint,
   },
