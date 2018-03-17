@@ -15,7 +15,11 @@ module.exports = {
       request({
         url: process.env.SERVICE_URL + req.originalUrl,
         method: req.method,
-        body: JSON.stringify(req.body),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json; charset=utf-8',
+        }
+        json: JSON.stringify(req.body),
       }).pipe(res);
     });
 
