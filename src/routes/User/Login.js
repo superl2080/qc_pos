@@ -51,7 +51,7 @@ export default class LoginPage extends Component {
         >
           <Tab key="wechat" tab="微信登录">
             {
-              user.status === 'error' &&
+              user.code !== 0 &&
               user.type === 'wechat' &&
               !user.submitting &&
               this.renderMessage('尚未绑定微信账号')
@@ -61,12 +61,12 @@ export default class LoginPage extends Component {
           </Tab>
           <Tab key="account" tab="账户密码登录">
             {
-              user.status === 'error' &&
+              user.code !== 0 &&
               user.type === 'account' &&
               !user.submitting &&
               this.renderMessage('账户或密码错误')
             }
-            <UserName name="userName" placeholder="请输入账号.." />
+            <UserName name="logid" placeholder="请输入账号.." />
             <Password name="password" placeholder="请输入密码.." />
             <Submit loading={submitting}>登录</Submit>
           </Tab>

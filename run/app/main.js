@@ -8,7 +8,11 @@ module.exports = {
   run: async function (app) {
     console.log(__filename + '\n[CALL] run');
 
-    app.use('/api/*', (req, res, next) => {
+    app.use('/pos/getCurrentEnv', (req, res, next) => {
+      res.send(process.env);
+    });
+
+    app.use('/pos/*', (req, res, next) => {
       req.pipe(request({
         url: process.env.SERVICE_URL + req.originalUrl,
         method: req.method,

@@ -2,7 +2,7 @@ import { stringify } from 'qs';
 import request from '../utils/request';
 
 export async function partnerLogin(params) {
-  return request('/api/partner/login', {
+  return request('/pos/partner/login', {
     method: 'POST',
     body: params,
   });

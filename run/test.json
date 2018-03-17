@@ -5,6 +5,7 @@
       "script": "./bin/www",
       "instances": "1",
       "env": {
+        "SIT_URL": "http://sittest.51qingcheng.com",
         "SERVICE_URL": "http://servicetest.51qingcheng.com",
         "PORT": 3103,
         "NODE_ENV": "test"

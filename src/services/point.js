@@ -4,7 +4,7 @@ import request from '../utils/request';
 
 
 export async function queryPoint(params) {
-  return request(`/api/point?${stringify(params)}`);
+  return request(`/pos/point?${stringify(params)}`);
 }
 
 export async function removePoint(params) {

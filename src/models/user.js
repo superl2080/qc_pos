@@ -8,7 +8,8 @@ export default {
 
   state: {
     currentUser: {},
-    status: undefined,
+    code: 99999,
+    type: undefined,
   },
 
   effects: {
@@ -16,10 +17,10 @@ export default {
       const response = yield call(partnerLogin, payload);
       yield put({
         type: 'changeLoginStatus',
-        payload: response,
+        payload: { ...response, type: payload.type },
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.code === 0) {
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       }
@@ -36,9 +37,12 @@ export default {
         yield put({
           type: 'changeLoginStatus',
           payload: {
-            status: undefined,
-            token: undefined,
-            character: 'GUEST',
+            code: 99999,
+            data: {
+              token: undefined,
+              character: 'GUEST',
+            },
+            type: undefined,
           },
         });
         reloadAuthorized();
@@ -57,12 +61,12 @@ export default {
   reducers: {
     changeLoginStatus(state, { payload }) {
       setAuthority({ 
-        character: payload.character, 
-        token: payload.token,
+        character: payload.data.character, 
+        token: payload.data.token,
       });
       return {
         ...state,
-        status: payload.status,
+        code: payload.code,
         type: payload.type,
       };
     },

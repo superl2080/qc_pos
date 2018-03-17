@@ -6,6 +6,7 @@
       "instances": "1",
       "exec_mode": "cluster",
       "env": {
+        "SIT_URL": "http://sittest.51qingcheng.com",
         "SERVICE_URL": "http://service.51qingcheng.com",
         "PORT": 3003,
         "NODE_ENV": "development"

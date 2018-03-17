@@ -6,7 +6,7 @@ let statusTbl = ['OPEN', 'DEPLOY', 'CLOSE'];
 let qrcode_url = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1521228296198&di=eae6e2a9afccd036a53433c5087dea64&imgtype=0&src=http%3A%2F%2Fwww.hzwestlake.gov.cn%2Fewebeditor%2Fuploadfile%2F20170504120633549.jpg';
 for (let i = 0; i < 46; i += 1) {
   tableListDataSource.push({
-    key: i,
+    _id: i,
     createDate: new Date(`2017-07-${Math.floor(i / 2) + 1}`),
     name: `210800${i}`,
     state: statusTbl[Math.floor(Math.random() * 10) % 3],

@@ -13,52 +13,62 @@ const noProxy = process.env.NO_PROXY === 'true';
 
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 const proxy = {
-  'POST /api/partner/login': (req, res) => {
-    const { password, userName, type } = req.body;
-    if(password === '1' && userName === 'ADMIN'){
+  'GET /pos/getCurrentEnv': (req, res) => {
+    res.send({
+      SIT_URL: "http://sittest.51qingcheng.com",
+    });
+  },
+  'POST /pos/partner/login': (req, res) => {
+    const { password, logid, type } = req.body;
+    if(password === '1' && logid === 'ADMIN'){
       res.send({
-        status: 'ok',
-        type,
-        token: 'a',
-        character: 'ADMIN',
+        code: 0,
+        data: {
+          token: 'a',
+          character: 'ADMIN',
+        },
       });
       return ;
     }
-    if(password === '1' && userName === 'OPERATOR'){
+    if(password === '1' && logid === 'OPERATOR'){
       res.send({
-        status: 'ok',
-        type,
-        token: 'b',
-        character: 'OPERATOR',
+        code: 0,
+        data: {
+          token: 'b',
+          character: 'OPERATOR',
+        },
       });
       return ;
     }
-    if(password === '1' && userName === 'DEVICER'){
+    if(password === '1' && logid === 'DEVICER'){
       res.send({
-        status: 'ok',
-        type,
-        token: 'c',
-        character: 'DEVICER',
+        code: 0,
+        data: {
+          token: 'c',
+          character: 'DEVICER',
+        },
       });
       return ;
     }
-    if(password === '1' && userName === 'AGENT'){
+    if(password === '1' && logid === 'AGENT'){
       res.send({
-        status: 'ok',
-        type,
-        token: 'd',
-        character: 'AGENT',
+        code: 0,
+        data: {
+          token: 'd',
+          character: 'AGENT',
+        },
       });
       return ;
     }
     res.send({
-      status: 'error',
-      type,
-      token: undefined,
-      character: 'GUEST',
+      code: 220000,
+      data: {
+        token: undefined,
+        character: 'GUEST',
+      },
     });
   },
-  'GET /api/point': getPoint,
+  'GET /pos/point': getPoint,
   'POST /api/point': {
     $body: postPoint,
   },

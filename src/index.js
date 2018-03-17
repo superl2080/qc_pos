@@ -27,6 +27,9 @@ app.router(require('./router').default);
 
 // 5. Start
 app.start('#root');
+app._store.dispatch({
+  type: 'global/getCurrentEnv',
+});
 
 
 FastClick.attach(document.body);

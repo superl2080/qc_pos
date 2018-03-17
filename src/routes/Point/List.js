@@ -98,7 +98,8 @@ const CreateAddModel = Form.create()((props) => {
   );
 });
 
-@connect(({ point, loading }) => ({
+@connect(({ global, point, loading }) => ({
+  global,
   point,
   loading: loading.models.point,
 }))
@@ -211,7 +212,7 @@ export default class TableList extends PureComponent {
   }
 
   render() {
-    const { point: { data }, loading, form: { getFieldDecorator } } = this.props;
+    const { global, point: { data }, loading, form: { getFieldDecorator } } = this.props;
     const { selectedRows, modalVisible } = this.state;
 
     return (
@@ -269,7 +270,7 @@ export default class TableList extends PureComponent {
               }
               <div style={{ display: 'none' }}>
               {
-                selectedRows.map(selectedRow => <QRCode className="pointQrcode" level="H" filename={selectedRow.name + ".png"} value={selectedRow.qrcode_url} /> )
+                selectedRows.map(selectedRow => <QRCode key={selectedRow.key} className="pointQrcode" size={256} level="H" filename={selectedRow.name + ".png"} value={global.currentEnv.SIT_URL + "/scan/point/" + selectedRow._id} /> )
               }
               </div>
             </div>

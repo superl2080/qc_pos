@@ -13,6 +13,7 @@ export default {
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryPoint, payload);
+      response.list.forEach(d => d.key = d._id )
       yield put({
         type: 'save',
         payload: response,
