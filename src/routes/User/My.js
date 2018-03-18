@@ -44,9 +44,11 @@ const tableData = [{
 
 class AdvancedForm extends PureComponent {
   logout = () => {
-    message.success('已退出当前登录账号！');
     this.props.dispatch({
       type: 'user/logout',
+      callback: (result) => {
+        result ? message.success('已退出当前登录账号！') : message.error('退出登录发生异常，请联系管理员！')
+      },
     });
   }
 

@@ -20,6 +20,7 @@ const proxy = {
   },
   'POST /pos/partner/login': 'http://servicetest.51qingcheng.com',
   'GET /pos/point/getList': 'http://servicetest.51qingcheng.com',
+  'POST /pos/point/create': 'http://servicetest.51qingcheng.com',
 
   'POST /api/point': {
     $body: postPoint,

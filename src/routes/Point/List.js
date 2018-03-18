@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal, message, Badge, Divider } from 'antd';
 import QRCode from 'qrcode.react';
+import Authorized from '../../utils/Authorized';
 import StandardTable from '../../components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
@@ -94,6 +95,20 @@ const CreateAddModel = Form.create()((props) => {
           <Input placeholder="请输入创建的数量" />
         )}
       </Form.Item>
+      <Form.Item
+        labelCol={{ span: 5 }}
+        wrapperCol={{ span: 15 }}
+        label="状态"
+      >
+        {form.getFieldDecorator('state', {
+          rules: [{ required: true, message: '请选择点位初始状态' }],
+        })(
+          <Select placeholder="请选择状态" allowClear style={{ width: '100%' }}>
+            <Select.Option value="OPEN">{stateMap['OPEN'].text}</Select.Option>
+            <Select.Option value="DEPLOY">{stateMap['DEPLOY'].text}</Select.Option>
+          </Select>
+        )}
+      </Form.Item>
     </Modal>
   );
 });
@@ -151,7 +166,13 @@ export default class TableList extends PureComponent {
   }
 
   handleAddModalOK = (fields) => {
-    message.error('功能还没做完呢！');
+    dispatch({
+      type: 'point/create',
+      payload: fields,
+      callback: (result) => {
+        result ? message.success('新建点位成功！') : message.error('新建点位发生异常，请联系管理员！')
+      },
+    });
     this.setState({
       modalVisible: false,
     });
@@ -250,21 +271,35 @@ export default class TableList extends PureComponent {
               </Form>
             </div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
+              <Authorized authority={['ADMIN', 'OPERATOR']} >
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  新建
+                </Button>
+              </Authorized>
               {
                 selectedRows.length > 0 && (
                   <span>
-                    <Dropdown trigger={['click', 'hover']} overlay={
-                      <Menu onClick={this.handleBatchMenuClick} selectedKeys={[]}>
-                        <Menu.Item key="download">下载二维码</Menu.Item>
-                      </Menu>
-                    }>
-                      <Button>
-                        批量操作 <Icon type="down" />
-                      </Button>
-                    </Dropdown>
+                    <Authorized authority={['ADMIN', 'OPERATOR', 'DEVICER']}
+                      noMatch={
+                        <Dropdown trigger={['click', 'hover']} overlay={
+                          <Menu onClick={this.handleBatchMenuClick} selectedKeys={[]}>
+                          </Menu>
+                        }>
+                          <Button>
+                            批量操作 <Icon type="down" />
+                          </Button>
+                        </Dropdown>
+                      }>
+                      <Dropdown trigger={['click', 'hover']} overlay={
+                        <Menu onClick={this.handleBatchMenuClick} selectedKeys={[]}>
+                          <Menu.Item key="download">下载二维码</Menu.Item>
+                        </Menu>
+                      }>
+                        <Button>
+                          批量操作 <Icon type="down" />
+                        </Button>
+                      </Dropdown>
+                    </Authorized>
                   </span>
                 )
               }

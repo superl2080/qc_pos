@@ -25,7 +25,7 @@ export default {
         yield put(routerRedux.push('/'));
       }
     },
-    *logout(_, { put, select }) {
+    *logout({ callback }, { put, select }) {
       try {
         // get location pathname
         const urlParams = new URL(window.location.href);
@@ -47,6 +47,7 @@ export default {
         });
         reloadAuthorized();
         yield put(routerRedux.push('/user/guest/login'));
+        if (callback) callback(false);
       }
     },
     *fetchCurrent(_, { call, put }) {
